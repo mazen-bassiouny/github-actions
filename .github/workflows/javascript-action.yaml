@@ -23,7 +23,7 @@ jobs:
         run : |
             pwd
             ls -a
-      - name : echo some environment variables:
+      - name: echo some environment variables:
         run : |
             echo $GITHUB_SHA
             echo $GITHUB_REPOSITORY
