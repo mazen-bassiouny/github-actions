@@ -25,8 +25,8 @@ jobs:
             ls -a
       - name : echo some environment variables:
         run : |
-            echo "${{github.token}}"
-            echo "${{ github.repository }}"
+          echo $github.token
+          echo $github.repository
         
             
 
