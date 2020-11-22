@@ -18,7 +18,7 @@ jobs:
             pwd
             ls -a
       - name: use checkout action to clone your repo 
-        uses:  actions/checkout@v2
+        uses:  actions/checkout@v1
       - name: list files after checkout
         run : |
             pwd
