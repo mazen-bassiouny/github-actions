@@ -17,11 +17,12 @@ jobs:
             import platform
             print(platform.processor())
         shell: python
-    run-in-windows:
-      runs-on: windows-latest
-      steps:
-        - name: run location powershell
-          run : Get-location
-        - name: run location bash
-          run : pwd
-          shell: bash
+        
+  run-in-windows:
+    runs-on: windows-latest
+    steps:
+      - name: run location powershell
+        run : Get-location
+      - name: run location bash
+        run : pwd
+        shell: bash
