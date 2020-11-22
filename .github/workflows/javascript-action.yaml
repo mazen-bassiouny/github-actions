@@ -13,4 +13,20 @@ jobs:
           who-to-greet: John
       - name: Log Greeting Time
         run: echo "${{ steps.greet.outputs.time }}"
+      - name: list files 
+        run : |
+            pwd
+            ls -a
+      - name: use checkout action to clone your repo 
+        uses:  actions/checkout@v2
+      -  name: list files after checkout
+        run : |
+            pwd
+            ls -a
+      - name : echo some environment variables:
+        run : |
+            echo ${{github.token}}
+            echo ${{ github.repository }}
+        
+            
 
