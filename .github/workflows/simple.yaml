@@ -20,6 +20,7 @@ jobs:
         
   run-in-windows:
     runs-on: windows-latest
+    needs: [run-shell-command]
     steps:
       - name: run location powershell
         run : Get-location
