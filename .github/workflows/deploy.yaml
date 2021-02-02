@@ -1,0 +1,19 @@
+name: Log latest release
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Test Tracktor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.2.0
+
+      - name: Prepare SSH-Keys
+        uses: shimataro/ssh-key-action@v2.0.3
+        with:
+          key: ${{ secrets.CROSS_PULL_GIT_ACTIONS }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
