@@ -1,0 +1,5 @@
+azure-eventhub
+falcon
+pytest
+pytest-cov
+git+ssh://git@github.com/be-media-co/te-commons.git@v1.3.1#egg=te-commons[key-vault]

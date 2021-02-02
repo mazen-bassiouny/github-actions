@@ -1,0 +1,5 @@
+azure-eventhub
+falcon
+uwsgi
+git+ssh://git@github.com/be-media-co/tcf2parser.git@v0.1.2
+git+ssh://git@github.com/be-media-co/te-commons.git@v1.3.1#egg=te-commons[key-vault]

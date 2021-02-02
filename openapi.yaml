@@ -1,0 +1,186 @@
+openapi: 3.0.1
+info:
+  title: Tracktor
+  description: 'Expose endpoint to track user movements online.'
+  version: 1.5.0
+servers:
+  - url: https://tr.technical-service.net
+    description: Production
+  - url: https://tr-staging.technical-service.net
+    description: Staging
+  - url: https://tr-test.technical-service.net
+    description: Test
+paths:
+  /get:
+    get:
+      tags:
+        - Cookie Information
+      summary: Endpoint to retrive cookie information
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/javascript:
+              schema:
+                type: string
+                description: >
+                  A string generated generated from `vn`, `kn`, and a cookie-id
+                  of the form\: 'var \<vn\> = {"\<kn\>": "\<cookie-id\>"}'
+                example: >
+                  'var thcObj = {"technic": "488cffa2-73fc-42f3-8b0a-3dd93b16863c"};'
+      parameters:
+        - name: vn
+          in: query
+          description: >
+            Variable name in response (see `Responses` for more details)
+          required: false
+          schema:
+            type: string
+            default: thcObj
+        - name: kn
+          in: query
+          description: >
+            Key name of cookie in response map (see `Responses` for more details)
+          required: false
+          schema:
+            type: string
+            default: technic
+        - name: tr
+          in: query
+          description: >
+            By default the cookie queries are not logged. This parameter allows
+            to enable tracking/logging for the associated call. Any "truthy"
+            value will work, e.g. `true` or `1`
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/OptOut'
+        - $ref: '#/components/parameters/Gdpr'
+        - $ref: '#/components/parameters/GdprConsent'
+        - $ref: '#/components/parameters/GdprMode'
+        - $ref: '#/components/parameters/HasConsent'
+
+  /pixel.gif:
+    get:
+      tags:
+        - Tracking
+      summary: Simple pixel call used for tracking/logging of site visits
+      responses:
+        200:
+          description: >
+            Operation successful, return 2x2 transparent pixel in GIF format
+          content:
+            image/gif:
+              schema:
+                type: string
+                format: binary
+      parameters:
+        - name: "*"
+          in: query
+          description: >
+            Any parameter passed will be tracked/logged. This enables the
+            flexiable use of this endpoint, depending on the context it is
+            used in.
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/OptOut'
+        - $ref: '#/components/parameters/Gdpr'
+        - $ref: '#/components/parameters/GdprConsent'
+        - $ref: '#/components/parameters/GdprMode'
+        - $ref: '#/components/parameters/HasConsent'
+
+  /tracktor:
+    post:
+      tags:
+        - Tracking
+      summary: Endpoint to log custom/structured information
+      responses:
+        200:
+          description: Operation successful, return current cookie ID.
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 488cffa2-73fc-42f3-8b0a-3dd93b16863c
+      parameters:
+        - $ref: '#/components/parameters/tthc'
+        - $ref: '#/components/parameters/OptOut'
+        - $ref: '#/components/parameters/Gdpr'
+        - $ref: '#/components/parameters/GdprConsent'
+        - $ref: '#/components/parameters/GdprMode'
+        - $ref: '#/components/parameters/HasConsent'
+      requestBody:
+        required: false
+        description: >
+          Custom JSON object which should be logged via Tracktor.
+        content:
+          application/json:
+            schema:
+              type: string
+
+components:
+  parameters:
+    OptOut:
+      name: opt
+      in: query
+      description: Used to indicate an user opt-out.
+      required: false
+      schema:
+        type: string
+        enum:
+          - out
+
+    Gdpr:
+      name: gdpr
+      description: Indicate if the GDPR applies to the user (gdpr=0) or not
+        (gdpr=1)
+      in: query
+      schema:
+        type: string
+
+    GdprConsent:
+      name: gdpr_consent
+      description: Contains the TCF2 consent string
+      in: query
+      schema:
+        type: string
+
+    GdprMode:
+      name: gdpr_mode_
+      description: Tells if privacy is handled via opt-out (gdpr_mode_=0),
+        via consent (gdpr_mode_=2) or both (gdpr_mode_=1). The latter means,
+        that the TCF2 string (cf. `gdpr_consent`) will be considered if
+        specified, otherwise the `opt` parameter will be considered.
+      in: query
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+          - 2
+        default: 0
+
+    HasConsent:
+      name: has_consent
+      description: Tells if consent was gained outside of TCF (for cases
+        where no TCF string is avaiable but the user still gave consent).
+      in: query
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+        default: 0
+
+    tthc:
+      name: tthc
+      in: query
+      description: >
+        Used to pass an already known cookie-id to Tracktor so that no new
+        id is generated. This is especally important in the server to server
+        call via Metatron which has already generated a user ID.
+      required: false
+      schema:
+        type: string
+        example: 488cffa2-73fc-42f3-8b0a-3dd93b16863c
