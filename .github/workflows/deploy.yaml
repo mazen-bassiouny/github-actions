@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+env:
+  CODE_SRC_FOLDER: tracktor
 
 jobs:
   test:
@@ -17,3 +19,16 @@ jobs:
         with:
           key: ${{ secrets.CROSS_PULL_GIT_ACTIONS }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Test with pytest
+        run: |
+          pytest --cov-report term-missing --cov=${CODE_SRC_FOLDER} -vv
+    
